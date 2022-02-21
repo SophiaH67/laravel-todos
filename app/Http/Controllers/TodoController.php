@@ -9,6 +9,16 @@ use App\Models\Todo;
 class TodoController extends Controller
 {
     /**
+     * Create the controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(Todo::class, 'todo');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -40,7 +50,7 @@ class TodoController extends Controller
     {
         $todo = Todo::create($request->validated());
 
-        return redirect()->route('todos.show', $todo);
+        return redirect()->route('todos.show', compact('todo'));
     }
 
     /**
@@ -51,7 +61,7 @@ class TodoController extends Controller
      */
     public function show(Todo $todo)
     {
-        return view('todos.show', $todo);
+        return view('todos.show', compact('todo'));
     }
 
     /**
@@ -62,7 +72,7 @@ class TodoController extends Controller
      */
     public function edit(Todo $todo)
     {
-        return view('todos.edit', $todo);
+        return view('todos.edit', compact('todo'));
     }
 
     /**
@@ -76,7 +86,7 @@ class TodoController extends Controller
     {
         $todo->update($request->validated());
 
-        return redirect()->route('todos.show', $todo);
+        return redirect()->route('todos.show', compact('todo'));
     }
 
     /**
@@ -89,6 +99,6 @@ class TodoController extends Controller
     {
         $todo->delete();
 
-        return redirect()->route('todos.show', ['message' => 'Succesfully marked todo as completed.']);
+        return redirect()->route('todos.index')->with('success', 'Todo deleted successfully');
     }
 }
